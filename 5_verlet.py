@@ -2,23 +2,37 @@
 
 # import packages
 import numpy as np
+import verlet
+from scipy.constants import g
 
 # declare constants, variables etc.
+SIGMA=3.405e-10
+EPSILON=1.651e-21
+MASS=6.644e-26
 numParticles = 100
 
-# initialList = create [[xi,yi]*100] # random distribution with abs(xi) < boxLength > abs(yi)
+initCoords = []
+for i in range(numParticles):
+    xList = np.random.sample(100)
+    yList = np.random.sample(100)
+    initCoords.append([xList[i],yList[i]]*length)
 
-initVel = create [[dxi,dyi]*numParticles] # create array according to maxwell-boltzmann
+initVel0 = create [[dxi,dyi]*numParticles] # create array according to maxwell-boltzmann
 
 AvgVel = [0,0]
-for i < range(len(initVel)):
+for i in range(len(initVel0)):
     AvgVel += initVel[i]
 
-initVelNorm = initVel
-for i < range(len(initVel)):
-    initVelNorm[i] -= AvgVel/len(initVel)
+initVel = initVel0
+for i in range(len(initVel0)):
+    initVel[i] -= AvgVel/len(initVel0)
 
+#define interaction according to leonard-jones-potential
+def forceLJ(r):
+    R=SIGMA/r
+    return 4*EPSILON*(12*R**13-6*R**7)*[xj-xi,yj-yi]
 
-
-
-# initVel= [initVel0
+FG = [0,g*MASS]
+def forceLJG(r):
+    R=SIGMA/r
+    return 4*EPSILON*(12*R**13-6*R**7)*[xj-xi,yj-yi]+FG
