@@ -44,16 +44,24 @@ for i in range(len(initVel0)):
 # define interaction according to leonard-jones-potential for problems 5,7
 # goes into respective module to be used by verlet.py or
 # goes directly into verlet.py or gets provided from definitions.py to verlet.py and module takes an additional argument LJ/LJG/throw for force
-def forceLJ(r):
+
+FG = [0,GRAV*MASS]
+
+
+def forceLJ(r): #TODO are Particles j stationary while verlet computes or do they move according to v(t) from t to t+1/2 or t+1? Hope not, endless computations.
     R=SIGMA/r
     return 4*EPSILON*(12*R**13-6*R**7)*[xj-xi,yj-yi]
 
-FG = [0,GRAV*MASS]
-def forceLJG(r):
-    R=SIGMA/r
-    return 4*EPSILON*(12*R**13-6*R**7)*[xj-xi,yj-yi]+FG
 
 
+# TODO two better ideas performance-wise for forceLJG:
+# use forceLJ(r) for heated case as well, add after summation over all j has happened (doesn't need verlet b/c FG is constant):
+# -------- goes to the end of iteration(n) ------------------
+# drFG = integral(1/2*GRAV*dt**2)
+# dvFG = GRAV*dt
+# if j==numParticles+1:
+#     rho+=drFG , nu+=dvFG , n
+# this is equal to treating gravity as n+1th particle with constant interaction
 
 #---------------------------------- ideas for iteration funtion TODO still need to implement the force at some point, possibly directly in iteration(n)
 
