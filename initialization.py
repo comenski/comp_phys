@@ -9,6 +9,7 @@ numParticles = 100
 boxLength = 5 # TODO get box length from volume taken by 100*10 particles as given by ideal gas theory OR 10*particle free range, whichever is bigger
 TEMP = 288.15
 VAR = (kB*TEMP/MASS)**(1/2) # According to ideal gas theory
+rMax = 0.5*boxLength
 
 
 # get initial coordinates, randomly distributed in space
@@ -50,17 +51,28 @@ FG = [0,GRAV*MASS]
 #   return 4*EPSILON*(12*SIGMA**12/r**14 - 6*SIGMA**6/r**8)*[xj-xi,yj-yi] #TODO correct nomenclature
  
 # let's try with vector this time:
-def forceLJ(r):
-    [xi,yi,xj,yj]=r
+F= np.zeros(numParticles,numParticles) 
+
+def position():
+    for i in range(1, numParticles):
+        for j in range(i-1):
+            F[i][j]=forceLJ(r,i,j)
+    for j in range(1,numParticles):
+        for i in range(i-1):
+            F[j][i]=-F[i][j]
+position()
+ 
+def forceLJ(r,i,j):
+    [xi,yi,xj,yj]=[r[i][0],r[i][1],r[j][0],r[j][1]]
     rAbs = math.sqrt(xi**2-xj**2+yi**2-yj**2)
-    if rAbs < rWW:
+    if rAbs < rMax:
         return 4*EPSILON*(12*SIGMA**12/rAbs**14 - 6*SIGMA**6/rAbs**8)*[xj-xi,yj-yi]
     xj += boxLength
-    if rAbs < rWW:
+    if rAbs < rMax:
         return 4*EPSILON*(12*SIGMA**12/r**14 - 6*SIGMA**6/r**8)*[xj-xi,yj-yi]
     xj -= boxLength
     yj += boxLength
-    if rAbs < rWW:
+    if rAbs < rMax:
         return 4*EPSILON*(12*SIGMA**12/r**14 - 6*SIGMA**6/r**8)*[xj-xi,yj-yi]
     else:
         return 0
