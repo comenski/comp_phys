@@ -1,0 +1,51 @@
+\documentclass[a4paper]{scrartcl}
+
+\usepackage[a4paper,top=2.0cm,bottom=1.5cm,left=2.5cm,right=2.0cm,%
+headheight=15pt]{geometry}
+\addtolength{\footskip}{-6mm}
+
+\usepackage[english,german]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+
+
+\title{Title}
+
+\author{Author 1, Author 2}
+
+\date{today}
+
+\begin{document}
+\maketitle
+
+This is a template 
+
+\section{First section}
+\label{sec:sec1}
+
+Write whatever in this section.
+
+\subsection{This is a subsection}
+\label{sec:subsec}
+
+You can refere to Sect.~\ref{sec:sec1} or to a figure
+(Fig.~\ref{fig:plot}).
+
+\begin{figure}
+\begin{center}
+%\includegraphics[]{your_plot.pdf}
+\caption{Explain your figure}
+\label{fig:plot}
+\end{center}
+\end{figure} 
+
+You can also insert tables, equations, references and do many more
+things. 
+
+
+Check the manual that is in Moodle.
+
+\end{document}
