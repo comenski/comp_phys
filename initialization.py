@@ -12,12 +12,8 @@ VAR = (kB*TEMP/MASS)**(1/2) # According to ideal gas theory
 rMax = 0.5*boxLength
 
 
-# get initial coordinates, randomly distributed in space
-initCoords = [] #TODO if EFDL = []: write to EFDL in correct format: EFDL0=[ [[xi,yi],[dxi,dyi],0] ]
-xList = np.random.sample(numParticles)
-yList = np.random.sample(numParticles)
-for i in range(numParticles):
-    initCoords.append([xList[i],yList[i]]*boxLength)
+# get initial coordinates, randomly distributed in space # TODO write to data file[0]
+initCoords = np.random.sample((numParticles,2))*boxLength
 
 # create velocity distribution, dx and dy normal distributed -> [dx,dy] maxwell-boltzmann distributed
 initVel0 = []
@@ -51,17 +47,13 @@ FG = [0,GRAV*MASS]
 #   return 4*EPSILON*(12*SIGMA**12/r**14 - 6*SIGMA**6/r**8)*[xj-xi,yj-yi] #TODO correct nomenclature
  
 # let's try with vector this time:
-F= np.zeros(numParticles,numParticles) 
+rMatrix = np.tile(initCoords,(numParticles,1)).reshape(numParticles,numParticles,2)
+rMatrix -= np.transpose(rMatrix,(1,0,2))
+rMatrix = np.ma.masked_outside(rMatrix, -rMax, rMax)
+rMatrix = np.ma.masked_values(rMatrix, 0)
+print(rMatrix)
 
-def position():
-    for i in range(1, numParticles):
-        for j in range(i-1):
-            F[i][j]=forceLJ(r,i,j)
-    for j in range(1,numParticles):
-        for i in range(i-1):
-            F[j][i]=-F[i][j]
-position()
- 
+
 def forceLJ(r,i,j):
     [xi,yi,xj,yj]=[r[i][0],r[i][1],r[j][0],r[j][1]]
     rAbs = math.sqrt(xi**2-xj**2+yi**2-yj**2)
