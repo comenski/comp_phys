@@ -52,7 +52,6 @@ rMatrix = np.ma.masked_values(rMatrix, 0) # finally mask where r=0
 #rMatrix = np.ma.filled(rMatrix, 0) # set masking value to 0 for summation of arrays
 
 time3 = time.clock()
-print(time3-time1)
 # same for particles created by boundary conditions
 #rMatrixBound1 = np.tile(initCoords,(numParticles,1)).reshape(numParticles,numParticles,2)
 #rMatrixBound1 -= np.transpose(rMatrixBound1+[0,boxLength],(1,0,2))
@@ -79,16 +78,20 @@ print(time3-time1)
 time4 = time.clock()
 #print(rMatrix)
 
-# define function that computes force from leonard-jones-potential
+# define function that computes force from leonard-jones-potential, gets called by verlet.py
 def forceLJ(r):
     rAbs = math.sqrt(r[0]**2+r[1]**2)
     return 4*EPSILON*(12*SIGMA**12/rAbs**14 - 6*SIGMA**6/rAbs**8)*r
 
-print(np.ma.apply_along_axis(forceLJ, 2, rMatrix))
+testForceMatrix = np.ma.apply_along_axis(forceLJ, 2, rMatrix) # TODO just for testing purposes
 time5 = time.clock()
-print(np.array([time2,time3,time4,time5])-time1)
-# TODO call with np.apply_along_axis(forceLJ, 2, rMatrix) in respective modules
 
+print(np.sum(testForceMatrix,axis=0))
+time6 = time.clock()
+
+print(np.array([time2,time3,time4,time5,time6])-time1)
+
+# TODO call with np.apply_along_axis(forceLJ, 2, rMatrix) in respective modules
 FG = [0,GRAV*MASS]
 
 
